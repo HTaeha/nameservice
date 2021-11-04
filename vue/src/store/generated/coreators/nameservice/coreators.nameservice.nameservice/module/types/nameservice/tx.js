@@ -243,6 +243,108 @@ export const MsgSetNameResponse = {
         return message;
     }
 };
+const baseMsgDeleteName = { creator: '', name: '' };
+export const MsgDeleteName = {
+    encode(message, writer = Writer.create()) {
+        if (message.creator !== '') {
+            writer.uint32(10).string(message.creator);
+        }
+        if (message.name !== '') {
+            writer.uint32(18).string(message.name);
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof Uint8Array ? new Reader(input) : input;
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseMsgDeleteName };
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.creator = reader.string();
+                    break;
+                case 2:
+                    message.name = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        const message = { ...baseMsgDeleteName };
+        if (object.creator !== undefined && object.creator !== null) {
+            message.creator = String(object.creator);
+        }
+        else {
+            message.creator = '';
+        }
+        if (object.name !== undefined && object.name !== null) {
+            message.name = String(object.name);
+        }
+        else {
+            message.name = '';
+        }
+        return message;
+    },
+    toJSON(message) {
+        const obj = {};
+        message.creator !== undefined && (obj.creator = message.creator);
+        message.name !== undefined && (obj.name = message.name);
+        return obj;
+    },
+    fromPartial(object) {
+        const message = { ...baseMsgDeleteName };
+        if (object.creator !== undefined && object.creator !== null) {
+            message.creator = object.creator;
+        }
+        else {
+            message.creator = '';
+        }
+        if (object.name !== undefined && object.name !== null) {
+            message.name = object.name;
+        }
+        else {
+            message.name = '';
+        }
+        return message;
+    }
+};
+const baseMsgDeleteNameResponse = {};
+export const MsgDeleteNameResponse = {
+    encode(_, writer = Writer.create()) {
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof Uint8Array ? new Reader(input) : input;
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseMsgDeleteNameResponse };
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(_) {
+        const message = { ...baseMsgDeleteNameResponse };
+        return message;
+    },
+    toJSON(_) {
+        const obj = {};
+        return obj;
+    },
+    fromPartial(_) {
+        const message = { ...baseMsgDeleteNameResponse };
+        return message;
+    }
+};
 export class MsgClientImpl {
     constructor(rpc) {
         this.rpc = rpc;
@@ -256,5 +358,10 @@ export class MsgClientImpl {
         const data = MsgSetName.encode(request).finish();
         const promise = this.rpc.request('coreators.nameservice.nameservice.Msg', 'SetName', data);
         return promise.then((data) => MsgSetNameResponse.decode(new Reader(data)));
+    }
+    DeleteName(request) {
+        const data = MsgDeleteName.encode(request).finish();
+        const promise = this.rpc.request('coreators.nameservice.nameservice.Msg', 'DeleteName', data);
+        return promise.then((data) => MsgDeleteNameResponse.decode(new Reader(data)));
     }
 }

@@ -14,6 +14,12 @@ export interface MsgSetName {
 }
 export interface MsgSetNameResponse {
 }
+export interface MsgDeleteName {
+    creator: string;
+    name: string;
+}
+export interface MsgDeleteNameResponse {
+}
 export declare const MsgBuyName: {
     encode(message: MsgBuyName, writer?: Writer): Writer;
     decode(input: Reader | Uint8Array, length?: number): MsgBuyName;
@@ -42,17 +48,33 @@ export declare const MsgSetNameResponse: {
     toJSON(_: MsgSetNameResponse): unknown;
     fromPartial(_: DeepPartial<MsgSetNameResponse>): MsgSetNameResponse;
 };
+export declare const MsgDeleteName: {
+    encode(message: MsgDeleteName, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): MsgDeleteName;
+    fromJSON(object: any): MsgDeleteName;
+    toJSON(message: MsgDeleteName): unknown;
+    fromPartial(object: DeepPartial<MsgDeleteName>): MsgDeleteName;
+};
+export declare const MsgDeleteNameResponse: {
+    encode(_: MsgDeleteNameResponse, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): MsgDeleteNameResponse;
+    fromJSON(_: any): MsgDeleteNameResponse;
+    toJSON(_: MsgDeleteNameResponse): unknown;
+    fromPartial(_: DeepPartial<MsgDeleteNameResponse>): MsgDeleteNameResponse;
+};
 /** Msg defines the Msg service. */
 export interface Msg {
     BuyName(request: MsgBuyName): Promise<MsgBuyNameResponse>;
-    /** this line is used by starport scaffolding # proto/tx/rpc */
     SetName(request: MsgSetName): Promise<MsgSetNameResponse>;
+    /** this line is used by starport scaffolding # proto/tx/rpc */
+    DeleteName(request: MsgDeleteName): Promise<MsgDeleteNameResponse>;
 }
 export declare class MsgClientImpl implements Msg {
     private readonly rpc;
     constructor(rpc: Rpc);
     BuyName(request: MsgBuyName): Promise<MsgBuyNameResponse>;
     SetName(request: MsgSetName): Promise<MsgSetNameResponse>;
+    DeleteName(request: MsgDeleteName): Promise<MsgDeleteNameResponse>;
 }
 interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
