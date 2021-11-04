@@ -1,6 +1,8 @@
 import { txClient, queryClient, MissingWalletError } from './module';
 // @ts-ignore
 import { SpVuexError } from '@starport/vuex';
+import { Whois } from "./module/types/nameservice/whois";
+export { Whois };
 async function initTxClient(vuexGetters) {
     return await txClient(vuexGetters['common/wallet/signer'], {
         addr: vuexGetters['common/env/apiTendermint']
@@ -34,7 +36,11 @@ function getStructure(template) {
 }
 const getDefaultState = () => {
     return {
-        _Structure: {},
+        Whois: {},
+        WhoisAll: {},
+        _Structure: {
+            Whois: getStructure(Whois.fromPartial({})),
+        },
         _Subscriptions: new Set(),
     };
 };
@@ -58,6 +64,18 @@ export default {
         }
     },
     getters: {
+        getWhois: (state) => (params = { params: {} }) => {
+            if (!params.query) {
+                params.query = null;
+            }
+            return state.Whois[JSON.stringify(params)] ?? {};
+        },
+        getWhoisAll: (state) => (params = { params: {} }) => {
+            if (!params.query) {
+                params.query = null;
+            }
+            return state.WhoisAll[JSON.stringify(params)] ?? {};
+        },
         getTypeStructure: (state) => (type) => {
             return state._Structure[type].fields;
         }
@@ -86,6 +104,36 @@ export default {
                     throw new SpVuexError('Subscriptions: ' + e.message);
                 }
             });
+        },
+        async QueryWhois({ commit, rootGetters, getters }, { options: { subscribe, all } = { subscribe: false, all: false }, params: { ...key }, query = null }) {
+            try {
+                const queryClient = await initQueryClient(rootGetters);
+                let value = (await queryClient.queryWhois(key.index)).data;
+                commit('QUERY', { query: 'Whois', key: { params: { ...key }, query }, value });
+                if (subscribe)
+                    commit('SUBSCRIBE', { action: 'QueryWhois', payload: { options: { all }, params: { ...key }, query } });
+                return getters['getWhois']({ params: { ...key }, query }) ?? {};
+            }
+            catch (e) {
+                throw new SpVuexError('QueryClient:QueryWhois', 'API Node Unavailable. Could not perform query: ' + e.message);
+            }
+        },
+        async QueryWhoisAll({ commit, rootGetters, getters }, { options: { subscribe, all } = { subscribe: false, all: false }, params: { ...key }, query = null }) {
+            try {
+                const queryClient = await initQueryClient(rootGetters);
+                let value = (await queryClient.queryWhoisAll(query)).data;
+                while (all && value.pagination && value.pagination.nextKey != null) {
+                    let next_values = (await queryClient.queryWhoisAll({ ...query, 'pagination.key': value.pagination.nextKey })).data;
+                    value = mergeResults(value, next_values);
+                }
+                commit('QUERY', { query: 'WhoisAll', key: { params: { ...key }, query }, value });
+                if (subscribe)
+                    commit('SUBSCRIBE', { action: 'QueryWhoisAll', payload: { options: { all }, params: { ...key }, query } });
+                return getters['getWhoisAll']({ params: { ...key }, query }) ?? {};
+            }
+            catch (e) {
+                throw new SpVuexError('QueryClient:QueryWhoisAll', 'API Node Unavailable. Could not perform query: ' + e.message);
+            }
         },
         async sendMsgBuyName({ rootGetters }, { value, fee = [], memo = '' }) {
             try {
