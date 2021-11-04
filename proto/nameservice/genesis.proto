@@ -1,0 +1,11 @@
+syntax = "proto3";
+package coreators.nameservice.nameservice;
+
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/coreators/nameservice/x/nameservice/types";
+
+// GenesisState defines the nameservice module's genesis state.
+message GenesisState {
+    // this line is used by starport scaffolding # genesis/proto/state
+}
