@@ -7,6 +7,13 @@ export interface MsgBuyName {
 }
 export interface MsgBuyNameResponse {
 }
+export interface MsgSetName {
+    creator: string;
+    name: string;
+    value: string;
+}
+export interface MsgSetNameResponse {
+}
 export declare const MsgBuyName: {
     encode(message: MsgBuyName, writer?: Writer): Writer;
     decode(input: Reader | Uint8Array, length?: number): MsgBuyName;
@@ -21,15 +28,31 @@ export declare const MsgBuyNameResponse: {
     toJSON(_: MsgBuyNameResponse): unknown;
     fromPartial(_: DeepPartial<MsgBuyNameResponse>): MsgBuyNameResponse;
 };
+export declare const MsgSetName: {
+    encode(message: MsgSetName, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): MsgSetName;
+    fromJSON(object: any): MsgSetName;
+    toJSON(message: MsgSetName): unknown;
+    fromPartial(object: DeepPartial<MsgSetName>): MsgSetName;
+};
+export declare const MsgSetNameResponse: {
+    encode(_: MsgSetNameResponse, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): MsgSetNameResponse;
+    fromJSON(_: any): MsgSetNameResponse;
+    toJSON(_: MsgSetNameResponse): unknown;
+    fromPartial(_: DeepPartial<MsgSetNameResponse>): MsgSetNameResponse;
+};
 /** Msg defines the Msg service. */
 export interface Msg {
-    /** this line is used by starport scaffolding # proto/tx/rpc */
     BuyName(request: MsgBuyName): Promise<MsgBuyNameResponse>;
+    /** this line is used by starport scaffolding # proto/tx/rpc */
+    SetName(request: MsgSetName): Promise<MsgSetNameResponse>;
 }
 export declare class MsgClientImpl implements Msg {
     private readonly rpc;
     constructor(rpc: Rpc);
     BuyName(request: MsgBuyName): Promise<MsgBuyNameResponse>;
+    SetName(request: MsgSetName): Promise<MsgSetNameResponse>;
 }
 interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;

@@ -4,10 +4,12 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
+import { MsgSetName } from "./types/nameservice/tx";
 import { MsgBuyName } from "./types/nameservice/tx";
 
 
 const types = [
+  ["/coreators.nameservice.nameservice.MsgSetName", MsgSetName],
   ["/coreators.nameservice.nameservice.MsgBuyName", MsgBuyName],
   
 ];
@@ -37,6 +39,7 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
+    msgSetName: (data: MsgSetName): EncodeObject => ({ typeUrl: "/coreators.nameservice.nameservice.MsgSetName", value: data }),
     msgBuyName: (data: MsgBuyName): EncodeObject => ({ typeUrl: "/coreators.nameservice.nameservice.MsgBuyName", value: data }),
     
   };

@@ -1,4 +1,5 @@
 export declare type NameserviceMsgBuyNameResponse = object;
+export declare type NameserviceMsgSetNameResponse = object;
 export interface ProtobufAny {
     "@type"?: string;
 }

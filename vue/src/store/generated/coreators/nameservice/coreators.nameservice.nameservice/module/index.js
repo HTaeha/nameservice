@@ -2,8 +2,10 @@
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
+import { MsgSetName } from "./types/nameservice/tx";
 import { MsgBuyName } from "./types/nameservice/tx";
 const types = [
+    ["/coreators.nameservice.nameservice.MsgSetName", MsgSetName],
     ["/coreators.nameservice.nameservice.MsgBuyName", MsgBuyName],
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -19,6 +21,7 @@ const txClient = async (wallet, { addr: addr } = { addr: "http://localhost:26657
     const { address } = (await wallet.getAccounts())[0];
     return {
         signAndBroadcast: (msgs, { fee, memo } = { fee: defaultFee, memo: "" }) => client.signAndBroadcast(address, msgs, fee, memo),
+        msgSetName: (data) => ({ typeUrl: "/coreators.nameservice.nameservice.MsgSetName", value: data }),
         msgBuyName: (data) => ({ typeUrl: "/coreators.nameservice.nameservice.MsgBuyName", value: data }),
     };
 };

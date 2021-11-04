@@ -12504,6 +12504,8 @@ paths:
 definitions:
   coreators.nameservice.nameservice.MsgBuyNameResponse:
     type: object
+  coreators.nameservice.nameservice.MsgSetNameResponse:
+    type: object
   google.protobuf.Any:
     type: object
     properties:
